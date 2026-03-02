@@ -1,6 +1,6 @@
 # CS2 PUGs Bot
 
-A Discord bot to manage CS2 PUGs. Connects to [DatHost API](https://dathost.net/reference/post_api-0-1-cs2-matches).
+A Discord bot to manage CS2 PUGs. Connects to the [DatHost CS2 Servers API](https://dathost.net/reference/cs2-servers-rest-api).
 
 ## Test
 If you wish to test the bot without any setup, feel free to [invite it](https://discord.com/oauth2/authorize?client_id=820447661932019734&permissions=2433788944&scope=applications.commands+bot) to your Discord server.
@@ -51,9 +51,9 @@ If you wish to test the bot without any setup, feel free to [invite it](https://
 
 
 ## Requirements
-- Python 3.8+
+- Python 3.11+
 - DatHost account.
-- You must enable **server members intent** and **server message intent** on your bot developers portal.
+- You must enable **Server Members Intent** and **Message Content Intent** on your bot developers portal.
 - Required Permissions:
   - Manage Roles
   - Manage Channels
@@ -64,6 +64,11 @@ If you wish to test the bot without any setup, feel free to [invite it](https://
   - Use Slash Commands
   - Connect
   - Move Members
+
+## Dependency maintenance
+- Install dependencies from [requirements.txt](requirements.txt) to use pinned conservative ranges for runtime stability.
+- The bot currently authenticates to DatHost with email/password BasicAuth as configured in [config.json.template](config.json.template).
+- The paginator dependency is pinned to an immutable Git revision for deterministic installs.
 
 ## How to play
 - **Create lobby:** Create a lobby using command `/create-lobby` (You can create unlimited number of lobbies as you need)

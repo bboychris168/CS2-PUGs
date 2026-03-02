@@ -340,8 +340,10 @@ class DBManager:
     
     async def insert_players_stats(self, players_stats: List[dict]):
         """"""
-        values =",\n".join(f"('{ps['match_id']}', {ps['steam_id']}, {ps['user_id']}, '{ps['team']}')"
-                           for ps in players_stats)
+        values =",\n".join(
+            f"('{ps['match_id']}', {ps['steam_id']}, {ps['user_id']}, '{'spec' if ps['team'] == 'spectator' else ps['team']}')"
+            for ps in players_stats
+        )
         sql = f"INSERT INTO player_stats (match_id, steam_id, user_id, team) VALUES {values};"
         await self.query(sql)
     
