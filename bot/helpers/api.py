@@ -26,8 +26,11 @@ class MatchPlayer:
         self.score = data['stats']['score']
 
     @classmethod
-    def from_dict(cls, data: dict) -> "MatchPlayer":
-        return cls(data)
+    def from_dict(cls, data: dict) -> Optional["MatchPlayer"]:
+        try:
+            return cls(data)
+        except (TypeError, KeyError, ValueError):
+            return None
     
     @property
     def to_dict(self) -> dict:
@@ -56,16 +59,23 @@ class Match:
         self.team2_name = match_data['team2']['name']
         self.team1_score = match_data['team1']['stats']['score']
         self.team2_score = match_data['team2']['stats']['score']
-        self.canceled = match_data['cancel_reason'] is not None
+        self.canceled = match_data.get('cancel_reason') is not None
         self.finished = match_data['finished']
         self.connect_time = match_data['settings']['connect_time']
         self.map_name = match_data['settings']['map']
         self.rounds_played = match_data['rounds_played']
-        self.players = [MatchPlayer.from_dict(player) for player in match_data['players']]
+        self.players = []
+        for player in match_data.get('players', []):
+            parsed_player = MatchPlayer.from_dict(player)
+            if parsed_player:
+                self.players.append(parsed_player)
 
     @classmethod
-    def from_dict(cls, data: dict) -> "Match":
-        return cls(data)
+    def from_dict(cls, data: dict) -> Optional["Match"]:
+        try:
+            return cls(data)
+        except (TypeError, KeyError, ValueError):
+            return None
     
     @property
     def winner(self):
@@ -108,8 +118,11 @@ class GameServer:
         self.booting = data['booting']
 
     @classmethod
-    def from_dict(cls, data: dict) -> "GameServer":
-        return cls(data)
+    def from_dict(cls, data: dict) -> Optional["GameServer"]:
+        try:
+            return cls(data)
+        except (TypeError, KeyError, ValueError):
+            return None
 
 
 async def start_request_log(session, ctx, params):
@@ -145,16 +158,34 @@ class APIManager:
         self.bot = bot
         self.logger = logging.getLogger("API")
 
-    def connect(self, loop):
+    def connect(self):
         self.logger.info('Starting API helper client session')
         self.session = aiohttp.ClientSession(
             base_url="https://dathost.net",
             auth=aiohttp.BasicAuth(Config.dathost_email, Config.dathost_password),
-            loop=loop,
             json_serialize=lambda x: json.dumps(x, ensure_ascii=False),
             timeout=aiohttp.ClientTimeout(total=30),
             trace_configs=[TRACE_CONFIG] if Config.debug else None
         )
+
+    async def _raise_api_error(self, resp, default_message: str) -> None:
+        if resp.status == 401:
+            raise APIError("Invalid Dathost credentials!")
+
+        message = default_message
+        try:
+            resp_data = await resp.json()
+            if isinstance(resp_data, dict):
+                message = resp_data.get('message') or resp_data.get('error') or message
+        except Exception:
+            try:
+                resp_text = await resp.text()
+                if resp_text:
+                    message = resp_text
+            except Exception:
+                pass
+
+        raise APIError(f"{message} (HTTP {resp.status})")
 
     async def close(self):
         """ Close the API helper's session. """
@@ -166,20 +197,30 @@ class APIManager:
         url = f"/api/0.1/game-servers/{game_server_id}"
 
         async with self.session.get(url=url) as resp:
-            if resp.status == 401:
-                raise APIError("Invalid Dathost credentials!")
+            if not resp.ok:
+                await self._raise_api_error(resp, "Failed to get game server")
             resp_data = await resp.json()
-            return GameServer.from_dict(resp_data)
+            game_server = GameServer.from_dict(resp_data)
+            if not game_server:
+                raise APIError("Unexpected DatHost game server response.")
+            return game_server
         
     async def get_game_servers(self) -> List[GameServer]:
         """"""
         url = f"/api/0.1/game-servers"
 
         async with self.session.get(url=url) as resp:
-            if resp.status == 401:
-                raise APIError("Invalid Dathost credentials!")
+            if not resp.ok:
+                await self._raise_api_error(resp, "Failed to get game servers")
             resp_data = await resp.json()
-            return [GameServer.from_dict(game_server) for game_server in resp_data if game_server['game'] == 'cs2']
+            game_servers = []
+            for game_server in resp_data:
+                if game_server.get('game') != 'cs2':
+                    continue
+                parsed_game_server = GameServer.from_dict(game_server)
+                if parsed_game_server:
+                    game_servers.append(parsed_game_server)
+            return game_servers
         
     async def update_game_server(
         self,
@@ -194,28 +235,33 @@ class APIManager:
         if location: payload["location"] = location
 
         async with self.session.put(url=url, data=payload) as resp:
-            if resp.status == 401:
-                raise APIError("Invalid Dathost credentials!")
-            return resp.ok
+            if not resp.ok:
+                await self._raise_api_error(resp, "Failed to update game server")
+            return True
         
     async def stop_game_server(self, server_id: str):
         """"""
         url = f"/api/0.1/game-servers/{server_id}/stop"
 
         async with self.session.post(url=url) as resp:
-            if resp.status == 401:
-                raise APIError("Invalid Dathost credentials!")
-            return resp.ok
+            if not resp.ok:
+                await self._raise_api_error(resp, "Failed to stop game server")
+            return True
 
     async def get_match(self, match_id: str) -> Optional["Match"]:
         """"""
         url = f"/api/0.1/cs2-matches/{match_id}"
 
         async with self.session.get(url=url) as resp:
-            if resp.status == 401:
-                raise APIError("Invalid Dathost credentials!")
+            if resp.status == 404:
+                return None
+            if not resp.ok:
+                await self._raise_api_error(resp, "Failed to get match")
             resp_data = await resp.json()
-            return Match.from_dict(resp_data)
+            match = Match.from_dict(resp_data)
+            if not match:
+                raise APIError("Unexpected DatHost match response.")
+            return match
         
     async def create_match(
         self,
@@ -249,13 +295,13 @@ class APIManager:
         }
 
         async with self.session.post(url=url, json=payload) as resp:
-            if resp.ok:
-                resp_data = await resp.json()
-                return Match.from_dict(resp_data)
-            elif resp.status == 401:
-                raise APIError("Invalid Dathost credentials!")
-            else:
-                return APIError
+            if not resp.ok:
+                await self._raise_api_error(resp, "Failed to create match")
+            resp_data = await resp.json()
+            match = Match.from_dict(resp_data)
+            if not match:
+                raise APIError("Unexpected DatHost create-match response.")
+            return match
 
     async def add_match_player(
         self,
@@ -271,27 +317,27 @@ class APIManager:
         }
 
         async with self.session.put(url=url, json=payload) as resp:
-            if resp.ok:
-                resp_data = await resp.json()
-                return MatchPlayer.from_dict(resp_data)
-            elif resp.status == 401:
-                raise APIError("Invalid Dathost credentials!")
-            elif resp.status == 404:
+            if resp.status == 404:
                 raise APIError("Invalid match ID.")
-            else:
-                return APIError
+            if not resp.ok:
+                await self._raise_api_error(resp, "Failed to add player to match")
+            resp_data = await resp.json()
+            player = MatchPlayer.from_dict(resp_data)
+            if not player:
+                raise APIError("Unexpected DatHost add-player response.")
+            return player
                 
     async def cancel_match(self, match_id: int):
         """"""
         url = f"/api/0.1/cs2-matches/{match_id}/cancel"
 
         async with self.session.post(url=url) as resp:
-            if resp.ok:
-                resp_data = await resp.json()
-                return Match.from_dict(resp_data)
-            elif resp.status == 401:
-                raise APIError("Invalid Dathost credentials!")
-            elif resp.status == 404:
+            if resp.status == 404:
                 raise APIError("Invalid match ID.")
-            else:
-                return APIError
+            if not resp.ok:
+                await self._raise_api_error(resp, "Failed to cancel match")
+            resp_data = await resp.json()
+            match = Match.from_dict(resp_data)
+            if not match:
+                raise APIError("Unexpected DatHost cancel-match response.")
+            return match

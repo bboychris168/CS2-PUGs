@@ -25,14 +25,40 @@ class WebServer:
         self.port = Config.webserver_port
         self.match_cog = self.bot.get_cog("Match")
 
+    @staticmethod
+    def _extract_api_key(req):
+        auth_header = req.headers.get('Authorization')
+        if not auth_header:
+            return None
+
+        bearer_prefix = 'Bearer '
+        if auth_header.startswith(bearer_prefix):
+            return auth_header[len(bearer_prefix):].strip()
+
+        return auth_header.strip()
+
     async def match_end(self, req):
         self.logger.info(f"Received webhook data from {req.url}")
-        api_key = req.headers.get('Authorization').strip('Bearer ')
+        self.match_cog = self.match_cog or self.bot.get_cog("Match")
+        api_key = self._extract_api_key(req)
+        if not api_key:
+            return web.json_response({'error': 'Unauthorized'}, status=401)
+
         match_model = await self.bot.db.get_match_by_api_key(api_key)
-        resp_data = await req.json()
+        if not match_model:
+            return web.json_response({'error': 'Invalid webhook token'}, status=403)
+
+        try:
+            resp_data = await req.json()
+        except Exception:
+            return web.json_response({'error': 'Invalid JSON body'}, status=400)
+
         match_api = Match.from_dict(resp_data)
-        if not match_model or not match_api:
-            return
+        if not match_api:
+            return web.json_response({'error': 'Invalid match payload'}, status=400)
+        if not self.match_cog:
+            self.logger.error('Match cog is not loaded while handling match-end webhook')
+            return web.json_response({'error': 'Match service unavailable'}, status=503)
 
         try:
             await self.bot.api.stop_game_server(match_model.game_server_id)
@@ -41,19 +67,33 @@ class WebServer:
 
         guild_model = await self.bot.db.get_guild_by_id(match_model.guild.id)
         match_api = await self.bot.api.get_match(match_model.id)
+        if not match_api:
+            return web.json_response({'error': 'Unable to fetch match from DatHost'}, status=502)
         await self.match_cog.finalize_match(match_model, match_api, guild_model)
+        return web.json_response({'ok': True})
 
     async def round_end(self, req):
         self.logger.debug(f"Received webhook data from {req.url}")
+        self.match_cog = self.match_cog or self.bot.get_cog("Match")
         game_server = None
         message = None
-        api_key = req.headers.get('Authorization').strip('Bearer ')
+        api_key = self._extract_api_key(req)
+        if not api_key:
+            return web.json_response({'error': 'Unauthorized'}, status=401)
+
         match_model = await self.bot.db.get_match_by_api_key(api_key)
-        resp_data = await req.json()
+        if not match_model:
+            return web.json_response({'error': 'Invalid webhook token'}, status=403)
+
+        try:
+            resp_data = await req.json()
+        except Exception:
+            return web.json_response({'error': 'Invalid JSON body'}, status=400)
+
         match_api = Match.from_dict(resp_data)
         # guild_model = await self.bot.db.get_guild_by_id(match_model.guild.id)
-        if not match_model or not match_api:
-            return
+        if not match_api:
+            return web.json_response({'error': 'Invalid match payload'}, status=400)
 
         for player_stat in match_api.players:
             try:
@@ -75,10 +115,13 @@ class WebServer:
 
         if message:
             try:
-                embed = self.match_cog.embed_match_info(match_api, game_server)
-                await message.edit(embed=embed)
+                if self.match_cog:
+                    embed = self.match_cog.embed_match_info(match_api, game_server)
+                    await message.edit(embed=embed)
             except Exception as e:
                 self.logger.error(e, exc_info=1)
+
+        return web.json_response({'ok': True})
 
     async def start_webhook_server(self):
         if self.server_running:
@@ -102,5 +145,5 @@ class WebServer:
             self.server_running = True
             self.logger.info("Webhook server started and running in the background")
         except Exception as e:
-            self.logger.error("Failed to start the webhook server.", e, exc_info=1)
+            self.logger.error("Failed to start the webhook server.", exc_info=1)
             self.server_running = False

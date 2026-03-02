@@ -12,6 +12,7 @@ from .helpers.webhook import WebServer
 from .helpers.db import DBManager
 from .helpers.api import APIManager
 from .helpers.errors import on_app_command_error
+from .resources import Config
 
 
 class G5Bot(commands.AutoShardedBot):
@@ -26,13 +27,19 @@ class G5Bot(commands.AutoShardedBot):
         self.db: DBManager = DBManager(self)
         self.api: APIManager = APIManager(self)
         self.webserver: WebServer = None
+        self._startup_complete: bool = False
+
+    async def setup_hook(self) -> None:
+        await self.db.connect()
+        self.api.connect()
+        self.webserver = WebServer(self)
+        await self.webserver.start_webhook_server()
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:
-        await self.db.connect()
-        self.api.connect(self.loop)
-        self.webserver = WebServer(self)
-        await self.webserver.start_webhook_server()
+        if self._startup_complete:
+            self.logger.info('Bot is ready to use in %s Discord servers', len(self.guilds))
+            return
 
         #  Sync guilds' information with the database.
         if self.guilds:
@@ -42,9 +49,12 @@ class G5Bot(commands.AutoShardedBot):
                     await self.check_guild_requirements(guild)
                 except: pass
 
-        self.logger.info("Syncing commands globally...")
-        await self.tree.sync()
-        self.logger.info("Commands have been successfully synced globally.")
+        if Config.sync_commands_globally:
+            self.logger.info("Syncing commands globally...")
+            await self.tree.sync()
+            self.logger.info("Commands have been successfully synced globally.")
+
+        self._startup_complete = True
         self.logger.info('Bot is ready to use in %s Discord servers', len(self.guilds))
 
     @commands.Cog.listener()
