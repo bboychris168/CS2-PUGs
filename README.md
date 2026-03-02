@@ -51,9 +51,9 @@ If you wish to test the bot without any setup, feel free to [invite it](https://
 
 
 ## Requirements
-- Python 3.10+
+- Python 3.11+
 - DatHost account.
-- You must enable **server members intent** and **server message intent** on your bot developers portal.
+- You must enable **Server Members Intent** and **Message Content Intent** on your bot developers portal.
 - Required Permissions:
   - Manage Roles
   - Manage Channels
@@ -68,7 +68,7 @@ If you wish to test the bot without any setup, feel free to [invite it](https://
 ## Dependency maintenance
 - Install dependencies from [requirements.txt](requirements.txt) to use pinned conservative ranges for runtime stability.
 - The bot currently authenticates to DatHost with email/password BasicAuth as configured in [config.json.template](config.json.template).
-- If DatHost account settings require token auth in your environment, update [bot/helpers/api.py](bot/helpers/api.py) and the `dathost` block in config accordingly.
+- The paginator dependency is pinned to an immutable Git revision for deterministic installs.
 
 ## How to play
 - **Create lobby:** Create a lobby using command `/create-lobby` (You can create unlimited number of lobbies as you need)

@@ -11,19 +11,24 @@ from bot.helpers.errors import APIError
 
 class MatchPlayer:
     def __init__(self, data):
-        self.match_id = data['match_id']
-        self.steam_id = int(data['steam_id_64'])
-        self.team = data['team']
-        self.kills = data['stats']['kills']
-        self.assists = data['stats']['assists']
-        self.headshots = data['stats']['kills_with_headshot']
-        self.deaths = data['stats']['deaths']
-        self.mvps = data['stats']['mvps']
-        self.k2 = data['stats']['2ks']
-        self.k3 = data['stats']['3ks']
-        self.k4 = data['stats']['4ks']
-        self.k5 = data['stats']['5ks']
-        self.score = data['stats']['score']
+        stats = data.get('stats') or {}
+        steam_id = data.get('steam_id_64') or data.get('steam_id')
+        if steam_id is None:
+            raise KeyError('steam_id_64')
+
+        self.match_id = data.get('match_id')
+        self.steam_id = int(steam_id)
+        self.team = data.get('team', 'none')
+        self.kills = int(stats.get('kills', 0))
+        self.assists = int(stats.get('assists', 0))
+        self.headshots = int(stats.get('kills_with_headshot', 0))
+        self.deaths = int(stats.get('deaths', 0))
+        self.mvps = int(stats.get('mvps', 0))
+        self.k2 = int(stats.get('2ks', 0))
+        self.k3 = int(stats.get('3ks', 0))
+        self.k4 = int(stats.get('4ks', 0))
+        self.k5 = int(stats.get('5ks', 0))
+        self.score = int(stats.get('score', 0))
 
     @classmethod
     def from_dict(cls, data: dict) -> Optional["MatchPlayer"]:
@@ -54,16 +59,22 @@ class Match:
     def __init__(self, match_data: dict) -> None:
         """"""
         self.id = match_data['id']
-        self.game_server_id = match_data['game_server_id']
-        self.team1_name = match_data['team1']['name']
-        self.team2_name = match_data['team2']['name']
-        self.team1_score = match_data['team1']['stats']['score']
-        self.team2_score = match_data['team2']['stats']['score']
+        team1 = match_data.get('team1') or {}
+        team2 = match_data.get('team2') or {}
+        team1_stats = team1.get('stats') or {}
+        team2_stats = team2.get('stats') or {}
+        settings = match_data.get('settings') or {}
+
+        self.game_server_id = match_data.get('game_server_id')
+        self.team1_name = team1.get('name', 'team1')
+        self.team2_name = team2.get('name', 'team2')
+        self.team1_score = int(team1_stats.get('score', 0))
+        self.team2_score = int(team2_stats.get('score', 0))
         self.canceled = match_data.get('cancel_reason') is not None
-        self.finished = match_data['finished']
-        self.connect_time = match_data['settings']['connect_time']
-        self.map_name = match_data['settings']['map']
-        self.rounds_played = match_data['rounds_played']
+        self.finished = bool(match_data.get('finished', False))
+        self.connect_time = int(settings.get('connect_time', 0))
+        self.map_name = settings.get('map', 'unknown')
+        self.rounds_played = int(match_data.get('rounds_played', 0))
         self.players = []
         for player in match_data.get('players', []):
             parsed_player = MatchPlayer.from_dict(player)
@@ -107,15 +118,18 @@ class GameServer:
 
     def __init__(self, data: dict) -> None:
         """"""
+        ports = data.get('ports') or {}
+        cs2_settings = data.get('cs2_settings') or {}
+
         self.id = data['id']
-        self.name = data['name']
-        self.ip = data['ip']
-        self.port = data['ports']['game']
-        self.gotv_port = data['ports']['gotv']
-        self.on = data['on']
-        self.game_mode = data['cs2_settings']['game_mode']
-        self.match_id = data['match_id']
-        self.booting = data['booting']
+        self.name = data.get('name', '')
+        self.ip = data.get('ip', '')
+        self.port = ports.get('game')
+        self.gotv_port = ports.get('gotv')
+        self.on = bool(data.get('on', False))
+        self.game_mode = cs2_settings.get('game_mode')
+        self.match_id = data.get('match_id')
+        self.booting = bool(data.get('booting', False))
 
     @classmethod
     def from_dict(cls, data: dict) -> Optional["GameServer"]:
@@ -168,9 +182,16 @@ class APIManager:
             trace_configs=[TRACE_CONFIG] if Config.debug else None
         )
 
+    async def _parse_json_response(self, resp, default_message: str):
+        try:
+            return await resp.json(content_type=None)
+        except Exception:
+            body = await resp.text()
+            raise APIError(f"{default_message}. Unexpected non-JSON response: {body[:250]}")
+
     async def _raise_api_error(self, resp, default_message: str) -> None:
         if resp.status == 401:
-            raise APIError("Invalid Dathost credentials!")
+            raise APIError("Invalid DatHost credentials!")
 
         message = default_message
         try:
@@ -199,7 +220,9 @@ class APIManager:
         async with self.session.get(url=url) as resp:
             if not resp.ok:
                 await self._raise_api_error(resp, "Failed to get game server")
-            resp_data = await resp.json()
+            resp_data = await self._parse_json_response(resp, "Failed to decode game server response")
+            if not isinstance(resp_data, dict):
+                raise APIError("Unexpected DatHost game server response.")
             game_server = GameServer.from_dict(resp_data)
             if not game_server:
                 raise APIError("Unexpected DatHost game server response.")
@@ -212,7 +235,9 @@ class APIManager:
         async with self.session.get(url=url) as resp:
             if not resp.ok:
                 await self._raise_api_error(resp, "Failed to get game servers")
-            resp_data = await resp.json()
+            resp_data = await self._parse_json_response(resp, "Failed to decode game servers response")
+            if not isinstance(resp_data, list):
+                raise APIError("Unexpected DatHost game servers response.")
             game_servers = []
             for game_server in resp_data:
                 if game_server.get('game') != 'cs2':
@@ -257,7 +282,9 @@ class APIManager:
                 return None
             if not resp.ok:
                 await self._raise_api_error(resp, "Failed to get match")
-            resp_data = await resp.json()
+            resp_data = await self._parse_json_response(resp, "Failed to decode match response")
+            if not isinstance(resp_data, dict):
+                raise APIError("Unexpected DatHost match response.")
             match = Match.from_dict(resp_data)
             if not match:
                 raise APIError("Unexpected DatHost match response.")
@@ -290,14 +317,16 @@ class APIManager:
             'webhooks': {
                 'match_end_url': f'http://{Config.webserver_host}:{Config.webserver_port}/cs2bot-api/match-end',
                 'round_end_url': f'http://{Config.webserver_host}:{Config.webserver_port}/cs2bot-api/round-end',
-                'authorization_header': api_key
+                'authorization_header': f'Bearer {api_key}'
             }
         }
 
         async with self.session.post(url=url, json=payload) as resp:
             if not resp.ok:
                 await self._raise_api_error(resp, "Failed to create match")
-            resp_data = await resp.json()
+            resp_data = await self._parse_json_response(resp, "Failed to decode create-match response")
+            if not isinstance(resp_data, dict):
+                raise APIError("Unexpected DatHost create-match response.")
             match = Match.from_dict(resp_data)
             if not match:
                 raise APIError("Unexpected DatHost create-match response.")
@@ -321,7 +350,9 @@ class APIManager:
                 raise APIError("Invalid match ID.")
             if not resp.ok:
                 await self._raise_api_error(resp, "Failed to add player to match")
-            resp_data = await resp.json()
+            resp_data = await self._parse_json_response(resp, "Failed to decode add-player response")
+            if not isinstance(resp_data, dict):
+                raise APIError("Unexpected DatHost add-player response.")
             player = MatchPlayer.from_dict(resp_data)
             if not player:
                 raise APIError("Unexpected DatHost add-player response.")
@@ -336,7 +367,9 @@ class APIManager:
                 raise APIError("Invalid match ID.")
             if not resp.ok:
                 await self._raise_api_error(resp, "Failed to cancel match")
-            resp_data = await resp.json()
+            resp_data = await self._parse_json_response(resp, "Failed to decode cancel-match response")
+            if not isinstance(resp_data, dict):
+                raise APIError("Unexpected DatHost cancel-match response.")
             match = Match.from_dict(resp_data)
             if not match:
                 raise APIError("Unexpected DatHost cancel-match response.")

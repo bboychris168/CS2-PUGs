@@ -12,7 +12,7 @@ class Help(commands.Cog):
         self.bot = bot
 
     @discord.app_commands.command(name='help', description='List of bot commands')
-    @commands.cooldown(1, 2, commands.BucketType.user)
+    @discord.app_commands.checks.cooldown(1, 2.0, key=lambda i: i.user.id)
     async def help(self, interaction: discord.Interaction):
         """"""
         await interaction.response.defer(ephemeral=True)
