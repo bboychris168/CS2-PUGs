@@ -13,7 +13,7 @@ from bot.helpers.models import GuildModel, MatchModel
 from bot.bot import G5Bot
 from bot.helpers.errors import APIError, CustomError
 from bot.resources import Config
-from bot.views import VetoView, PickTeamsView
+from bot.views import VetoView, PickTeamsView, PollView
 from bot.views.dropdownView import DropDownView
 
 
@@ -215,6 +215,9 @@ class MatchCog(commands.Cog, name="Match"):
                 await message.edit(embed=veto_view.embed_veto(), view=veto_view)
                 await veto_view.wait()
                 map_name = veto_view.maps_left[0]
+            elif map_method == 'poll':
+                poll_view = PollView(message, mpool, queue_users)
+                map_name = await poll_view.start()
             else:
                 map_name = choice(mpool)
 

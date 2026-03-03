@@ -1,0 +1,17 @@
+# Sensitive config (contains tokens & passwords)
+config.json
+
+# Compiled Python
+__pycache__/
+*.py[cod]
+
+# Logs
+*.log
+
+# Virtual environments
+.env
+venv/
+.venv/
+
+# OS
+.DS_Store

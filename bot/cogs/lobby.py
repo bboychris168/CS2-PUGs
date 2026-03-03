@@ -38,6 +38,7 @@ CAPTAIN_SELECTION_CHOICES = [
 MAP_SELECTION_CHOICES = [
     app_commands.Choice(name="Random", value="random"),
     app_commands.Choice(name="Veto", value="veto"),
+    app_commands.Choice(name="Polls", value="poll"),
 ]
 
 GAME_MODE_CHOICES = [
