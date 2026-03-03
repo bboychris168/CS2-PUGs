@@ -16,7 +16,7 @@ class LobbyModel:
         message_id: Optional[int],
         team_method: Literal["autobalance", "captains", "random"],
         captain_method: Literal["random", "volunteer", "rank"],
-        map_method: Literal["random", "veto"],
+        map_method: Literal["random", "veto", "poll"],
         game_mode: Literal["competitive", "casual", "arms_race", "ffa_deathmatch", "retakes", "wingman", "custom"],
         connect_time: int
     ):

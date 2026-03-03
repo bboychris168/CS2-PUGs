@@ -3,11 +3,13 @@ from .vetoView import VetoView
 from .teamsView import PickTeamsView
 from .confirmView import ConfirmView
 from .dropdownView import DropDownView
+from .pollView import PollView
 
 __all__ = [
     ReadyView,
     VetoView,
     PickTeamsView,
     ConfirmView,
-    DropDownView
+    DropDownView,
+    PollView
 ]
