@@ -8,11 +8,13 @@
     "maps": {
       "de_dust2": "Dust II",
       "de_inferno": "Inferno",
-      "de_vertigo": "Vertigo",
-      "de_overpass": "Overpass",
       "de_mirage": "Mirage",
       "de_nuke": "Nuke",
-      "de_ancient": "Ancient"
+      "de_ancient": "Ancient",
+      "de_anubis": "Anubis",
+      "de_train": "Train",
+      "de_vertigo": "Vertigo",
+      "de_overpass": "Overpass"
     }
   },
   "dathost": {
