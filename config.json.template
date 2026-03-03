@@ -1,8 +1,8 @@
 {
   "bot": {
     "prefix": "!",
-    "token": "",
-    "guild_id": 1234567890,
+    "token": "YOUR_DISCORD_BOT_TOKEN",
+    "guild_id": 123456789012345678,
     "sync_commands_globally": true,
     "debug": false,
     "maps": {
@@ -16,11 +16,11 @@
     }
   },
   "dathost": {
-    "email": "",
-    "password": ""
+    "email": "YOUR_DATHOST_EMAIL",
+    "password": "YOUR_DATHOST_PASSWORD"
   },
   "webserver": {
-    "host": "",
+    "host": "0.0.0.0",
     "port": 3000
   },
   "db": {
