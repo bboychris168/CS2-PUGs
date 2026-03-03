@@ -1,0 +1,336 @@
+[2026-03-02 04:39:00][Bot][INFO] Loaded extension 'logger'
+[2026-03-02 04:39:00][Bot][INFO] Loaded extension 'stats'
+[2026-03-02 04:39:00][Bot][INFO] Loaded extension 'lobby'
+[2026-03-02 04:39:00][Bot][INFO] Loaded extension 'link'
+[2026-03-02 04:39:00][Bot][INFO] Loaded extension 'match'
+[2026-03-02 04:39:00][Bot][INFO] Loaded extension 'help'
+[2026-03-02 04:39:00][discord.client][INFO] logging in using static token
+[2026-03-02 04:43:15][Bot][INFO] Loaded extension 'logger'
+[2026-03-02 04:43:15][Bot][INFO] Loaded extension 'stats'
+[2026-03-02 04:43:15][Bot][INFO] Loaded extension 'lobby'
+[2026-03-02 04:43:15][Bot][INFO] Loaded extension 'link'
+[2026-03-02 04:43:15][Bot][INFO] Loaded extension 'match'
+[2026-03-02 04:43:15][Bot][INFO] Loaded extension 'help'
+[2026-03-02 04:43:15][discord.client][INFO] logging in using static token
+[2026-03-02 04:47:51][Bot][INFO] Loaded extension 'logger'
+[2026-03-02 04:47:51][Bot][INFO] Loaded extension 'stats'
+[2026-03-02 04:47:51][Bot][INFO] Loaded extension 'lobby'
+[2026-03-02 04:47:51][Bot][INFO] Loaded extension 'link'
+[2026-03-02 04:47:51][Bot][INFO] Loaded extension 'match'
+[2026-03-02 04:47:51][Bot][INFO] Loaded extension 'help'
+[2026-03-02 04:47:51][discord.client][INFO] logging in using static token
+[2026-03-02 04:47:51][DB][INFO] Creating database connection pool.
+[2026-03-02 04:48:57][Bot][INFO] Loaded extension 'logger'
+[2026-03-02 04:48:57][Bot][INFO] Loaded extension 'stats'
+[2026-03-02 04:48:57][Bot][INFO] Loaded extension 'lobby'
+[2026-03-02 04:48:57][Bot][INFO] Loaded extension 'link'
+[2026-03-02 04:48:57][Bot][INFO] Loaded extension 'match'
+[2026-03-02 04:48:57][Bot][INFO] Loaded extension 'help'
+[2026-03-02 04:48:57][discord.client][INFO] logging in using static token
+[2026-03-02 04:48:58][DB][INFO] Creating database connection pool.
+[2026-03-02 04:48:58][API][INFO] Starting API helper client session
+[2026-03-02 04:48:58][API][INFO] Starting webhook server on :3000
+[2026-03-02 04:48:58][API][INFO] Webhook server started and running in the background
+[2026-03-02 04:48:59][Bot][INFO] Disconnected from Discord
+[2026-03-02 04:48:59][DB][INFO] Closing database connection pool.
+[2026-03-02 04:48:59][API][INFO] Closing API helper client session
+[2026-03-02 05:10:12][Bot][INFO] Loaded extension 'logger'
+[2026-03-02 05:10:12][Bot][INFO] Loaded extension 'stats'
+[2026-03-02 05:10:12][Bot][INFO] Loaded extension 'lobby'
+[2026-03-02 05:10:12][Bot][INFO] Loaded extension 'link'
+[2026-03-02 05:10:12][Bot][INFO] Loaded extension 'match'
+[2026-03-02 05:10:12][Bot][INFO] Loaded extension 'help'
+[2026-03-02 05:10:12][discord.client][INFO] logging in using static token
+[2026-03-02 05:10:13][DB][INFO] Creating database connection pool.
+[2026-03-02 05:10:13][API][INFO] Starting API helper client session
+[2026-03-02 05:10:13][API][INFO] Starting webhook server on :3000
+[2026-03-02 05:10:13][API][INFO] Webhook server started and running in the background
+[2026-03-02 05:10:14][Bot][INFO] Disconnected from Discord
+[2026-03-02 05:10:14][DB][INFO] Closing database connection pool.
+[2026-03-02 05:10:14][API][INFO] Closing API helper client session
+[2026-03-02 05:12:29][Bot][INFO] Loaded extension 'logger'
+[2026-03-02 05:12:29][Bot][INFO] Loaded extension 'stats'
+[2026-03-02 05:12:29][Bot][INFO] Loaded extension 'lobby'
+[2026-03-02 05:12:29][Bot][INFO] Loaded extension 'link'
+[2026-03-02 05:12:29][Bot][INFO] Loaded extension 'match'
+[2026-03-02 05:12:29][Bot][INFO] Loaded extension 'help'
+[2026-03-02 05:12:29][discord.client][INFO] logging in using static token
+[2026-03-02 05:12:29][DB][INFO] Creating database connection pool.
+[2026-03-02 05:12:30][API][INFO] Starting API helper client session
+[2026-03-02 05:12:30][API][INFO] Starting webhook server on :3000
+[2026-03-02 05:12:30][API][INFO] Webhook server started and running in the background
+[2026-03-02 05:12:30][discord.gateway][INFO] Shard ID 0 has connected to Gateway (Session ID: 2448ad3539909df392bcba3b0698ee78).
+[2026-03-02 05:12:30][Bot][INFO] Connected to Discord
+    Username: OIS
+    ID:       1477888649189392405
+[2026-03-02 05:12:32][Bot][INFO] Logged in as OIS
+[2026-03-02 05:12:32][Bot][INFO] discord.py API version: 2.6.4
+[2026-03-02 05:12:32][Bot][INFO] Python version: 3.12.3
+[2026-03-02 05:12:32][Bot][INFO] Running on: Linux 6.8.0-1044-azure (posix)
+[2026-03-02 05:12:37][Bot][INFO] Syncing commands globally...
+[2026-03-02 05:12:37][Bot][INFO] Commands have been successfully synced globally.
+[2026-03-02 05:12:37][Bot][INFO] Bot is ready to use in 1 Discord servers
+[2026-03-02 05:15:07][Bot][INFO] Command "create-lobby" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-02 05:18:56][Bot][INFO] Loaded extension 'logger'
+[2026-03-02 05:18:56][Bot][INFO] Loaded extension 'stats'
+[2026-03-02 05:18:56][Bot][INFO] Loaded extension 'lobby'
+[2026-03-02 05:18:56][Bot][INFO] Loaded extension 'link'
+[2026-03-02 05:18:56][Bot][INFO] Loaded extension 'match'
+[2026-03-02 05:18:56][Bot][INFO] Loaded extension 'help'
+[2026-03-02 05:18:56][discord.client][INFO] logging in using static token
+[2026-03-02 05:18:57][DB][INFO] Creating database connection pool.
+[2026-03-02 05:18:57][API][INFO] Starting API helper client session
+[2026-03-02 05:18:57][API][INFO] Starting webhook server on :3000
+[2026-03-02 05:18:57][API][INFO] Webhook server started and running in the background
+[2026-03-02 05:18:58][discord.gateway][INFO] Shard ID 0 has connected to Gateway (Session ID: 3a2a540405e9d7041a0be4b0949f0d4d).
+[2026-03-02 05:18:58][Bot][INFO] Connected to Discord
+    Username: OIS
+    ID:       1477888649189392405
+[2026-03-02 05:19:00][Bot][INFO] Logged in as OIS
+[2026-03-02 05:19:00][Bot][INFO] discord.py API version: 2.6.4
+[2026-03-02 05:19:00][Bot][INFO] Python version: 3.12.1
+[2026-03-02 05:19:00][Bot][INFO] Running on: Linux 6.8.0-1044-azure (posix)
+[2026-03-02 05:19:00][Bot][INFO] Syncing commands globally...
+[2026-03-02 05:19:00][Bot][INFO] Commands have been successfully synced globally.
+[2026-03-02 05:19:00][Bot][INFO] Bot is ready to use in 1 Discord servers
+[2026-03-02 05:19:37][Bot][INFO] Command "link-steam" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-02 05:23:22][Bot][INFO] Command "create-lobby" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-02 05:24:42][Bot][INFO] Command "create-lobby" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-02 05:47:37][PIL.PngImagePlugin][DEBUG] STREAM b'IHDR' 16 13
+[2026-03-02 05:47:37][PIL.PngImagePlugin][DEBUG] STREAM b'pHYs' 41 9
+[2026-03-02 05:47:37][PIL.PngImagePlugin][DEBUG] STREAM b'iTXt' 62 1863
+[2026-03-02 05:47:37][PIL.PngImagePlugin][DEBUG] STREAM b'IDAT' 1937 9413
+[2026-03-02 05:47:37][Bot][INFO] Command "view-stats" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-02 05:48:37][Bot][INFO] Command "help" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-03 00:24:06][Bot][INFO] Loaded extension 'logger'
+[2026-03-03 00:24:06][Bot][INFO] Loaded extension 'stats'
+[2026-03-03 00:24:06][Bot][INFO] Loaded extension 'lobby'
+[2026-03-03 00:24:06][Bot][INFO] Loaded extension 'link'
+[2026-03-03 00:24:06][Bot][INFO] Loaded extension 'match'
+[2026-03-03 00:24:06][Bot][INFO] Loaded extension 'help'
+[2026-03-03 00:24:06][discord.client][INFO] logging in using static token
+[2026-03-03 00:24:07][DB][INFO] Creating database connection pool.
+[2026-03-03 00:24:48][Bot][INFO] Loaded extension 'logger'
+[2026-03-03 00:24:48][Bot][INFO] Loaded extension 'stats'
+[2026-03-03 00:24:48][Bot][INFO] Loaded extension 'lobby'
+[2026-03-03 00:24:48][Bot][INFO] Loaded extension 'link'
+[2026-03-03 00:24:48][Bot][INFO] Loaded extension 'match'
+[2026-03-03 00:24:48][Bot][INFO] Loaded extension 'help'
+[2026-03-03 00:24:48][discord.client][INFO] logging in using static token
+[2026-03-03 00:24:48][DB][INFO] Creating database connection pool.
+[2026-03-03 00:26:23][Bot][INFO] Loaded extension 'logger'
+[2026-03-03 00:26:23][Bot][INFO] Loaded extension 'stats'
+[2026-03-03 00:26:23][Bot][INFO] Loaded extension 'lobby'
+[2026-03-03 00:26:23][Bot][INFO] Loaded extension 'link'
+[2026-03-03 00:26:23][Bot][INFO] Loaded extension 'match'
+[2026-03-03 00:26:23][Bot][INFO] Loaded extension 'help'
+[2026-03-03 00:26:23][discord.client][INFO] logging in using static token
+[2026-03-03 00:26:24][DB][INFO] Creating database connection pool.
+[2026-03-03 00:26:24][API][INFO] Starting API helper client session
+[2026-03-03 00:26:24][API][INFO] Starting webhook server on :3000
+[2026-03-03 00:26:24][API][INFO] Webhook server started and running in the background
+[2026-03-03 00:26:25][discord.gateway][INFO] Shard ID 0 has connected to Gateway (Session ID: 1e3a1f450a6ecd1f5458ca7f17e89795).
+[2026-03-03 00:26:25][Bot][INFO] Connected to Discord
+    Username: OIS
+    ID:       1477888649189392405
+[2026-03-03 00:26:27][Bot][INFO] Logged in as OIS
+[2026-03-03 00:26:27][Bot][INFO] discord.py API version: 2.6.4
+[2026-03-03 00:26:27][Bot][INFO] Python version: 3.12.3
+[2026-03-03 00:26:27][Bot][INFO] Running on: Linux 6.8.0-1044-azure (posix)
+[2026-03-03 00:26:30][Bot][INFO] Syncing commands globally...
+[2026-03-03 00:26:31][Bot][INFO] Commands have been successfully synced globally.
+[2026-03-03 00:26:31][Bot][INFO] Bot is ready to use in 1 Discord servers
+[2026-03-03 00:27:08][Bot][INFO] Command "create-lobby" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-03 00:29:55][Bot][INFO] Command "create-lobby" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-03 00:33:40][Bot][INFO] Loaded extension 'logger'
+[2026-03-03 00:33:40][Bot][INFO] Loaded extension 'stats'
+[2026-03-03 00:33:40][Bot][INFO] Loaded extension 'lobby'
+[2026-03-03 00:33:40][Bot][INFO] Loaded extension 'link'
+[2026-03-03 00:33:40][Bot][INFO] Loaded extension 'match'
+[2026-03-03 00:33:40][Bot][INFO] Loaded extension 'help'
+[2026-03-03 00:33:40][discord.client][INFO] logging in using static token
+[2026-03-03 00:33:40][DB][INFO] Creating database connection pool.
+[2026-03-03 00:33:41][API][INFO] Starting API helper client session
+[2026-03-03 00:33:41][API][INFO] Starting webhook server on :3000
+[2026-03-03 00:33:41][API][INFO] Webhook server started and running in the background
+[2026-03-03 00:33:42][discord.gateway][INFO] Shard ID 0 has connected to Gateway (Session ID: c5cb045f7a76dac6bf81948acc3c40e3).
+[2026-03-03 00:33:42][Bot][INFO] Connected to Discord
+    Username: OIS
+    ID:       1477888649189392405
+[2026-03-03 00:33:44][Bot][INFO] Logged in as OIS
+[2026-03-03 00:33:44][Bot][INFO] discord.py API version: 2.6.4
+[2026-03-03 00:33:44][Bot][INFO] Python version: 3.12.1
+[2026-03-03 00:33:44][Bot][INFO] Running on: Linux 6.8.0-1044-azure (posix)
+[2026-03-03 00:33:47][Bot][INFO] Syncing commands globally...
+[2026-03-03 00:33:47][Bot][INFO] Commands have been successfully synced globally.
+[2026-03-03 00:33:47][Bot][INFO] Bot is ready to use in 1 Discord servers
+[2026-03-03 00:36:10][Bot][INFO] Command "link-steam" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-03 00:37:07][Bot][INFO] Command "create-lobby" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-03 00:37:29][Bot][ERROR] value too long for type character varying(32)
+Traceback (most recent call last):
+  File "/workspaces/CS2-PUGs/bot/cogs/match.py", line 542, in start_match
+    await self.bot.db.insert_players_stats(players_stats)
+  File "/workspaces/CS2-PUGs/bot/helpers/db.py", line 348, in insert_players_stats
+    await self.query(sql)
+  File "/workspaces/CS2-PUGs/bot/helpers/db.py", line 37, in query
+    result = await prepared_stmt.fetch(*args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 177, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 268, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 257, in __do_execute
+    return await executor(protocol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 205, in bind_execute
+asyncpg.exceptions.StringDataRightTruncationError: value too long for type character varying(32)
+[2026-03-03 00:38:41][Bot][INFO] Loaded extension 'logger'
+[2026-03-03 00:38:41][Bot][INFO] Loaded extension 'stats'
+[2026-03-03 00:38:41][Bot][INFO] Loaded extension 'lobby'
+[2026-03-03 00:38:41][Bot][INFO] Loaded extension 'link'
+[2026-03-03 00:38:41][Bot][INFO] Loaded extension 'match'
+[2026-03-03 00:38:41][Bot][INFO] Loaded extension 'help'
+[2026-03-03 00:38:41][discord.client][INFO] logging in using static token
+[2026-03-03 00:38:42][DB][INFO] Creating database connection pool.
+[2026-03-03 00:38:42][API][INFO] Starting API helper client session
+[2026-03-03 00:38:42][API][INFO] Starting webhook server on :3000
+[2026-03-03 00:38:42][API][INFO] Webhook server started and running in the background
+[2026-03-03 00:38:43][discord.gateway][INFO] Shard ID 0 has connected to Gateway (Session ID: 071981f6794c889fb25fefa5e66dd34b).
+[2026-03-03 00:38:43][Bot][INFO] Connected to Discord
+    Username: OIS
+    ID:       1477888649189392405
+[2026-03-03 00:38:45][Bot][INFO] Logged in as OIS
+[2026-03-03 00:38:45][Bot][INFO] discord.py API version: 2.6.4
+[2026-03-03 00:38:45][Bot][INFO] Python version: 3.12.3
+[2026-03-03 00:38:45][Bot][INFO] Running on: Linux 6.8.0-1044-azure (posix)
+[2026-03-03 00:38:45][Bot][INFO] Syncing commands globally...
+[2026-03-03 00:38:45][Bot][INFO] Commands have been successfully synced globally.
+[2026-03-03 00:38:45][Bot][INFO] Bot is ready to use in 1 Discord servers
+[2026-03-03 00:39:06][Bot][INFO] Command "cancel-match" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-03 00:39:38][Bot][INFO] Loaded extension 'logger'
+[2026-03-03 00:39:38][Bot][INFO] Loaded extension 'stats'
+[2026-03-03 00:39:38][Bot][INFO] Loaded extension 'lobby'
+[2026-03-03 00:39:38][Bot][INFO] Loaded extension 'link'
+[2026-03-03 00:39:38][Bot][INFO] Loaded extension 'match'
+[2026-03-03 00:39:38][Bot][INFO] Loaded extension 'help'
+[2026-03-03 00:39:38][discord.client][INFO] logging in using static token
+[2026-03-03 00:39:39][DB][INFO] Creating database connection pool.
+[2026-03-03 00:39:39][API][INFO] Starting API helper client session
+[2026-03-03 00:39:39][API][INFO] Starting webhook server on :3000
+[2026-03-03 00:39:39][API][INFO] Webhook server started and running in the background
+[2026-03-03 00:39:40][discord.gateway][INFO] Shard ID 0 has connected to Gateway (Session ID: 755a771ed142f79b10d023009b5fbb1f).
+[2026-03-03 00:39:40][Bot][INFO] Connected to Discord
+    Username: OIS
+    ID:       1477888649189392405
+[2026-03-03 00:39:42][Bot][INFO] Logged in as OIS
+[2026-03-03 00:39:42][Bot][INFO] discord.py API version: 2.6.4
+[2026-03-03 00:39:42][Bot][INFO] Python version: 3.12.1
+[2026-03-03 00:39:42][Bot][INFO] Running on: Linux 6.8.0-1044-azure (posix)
+[2026-03-03 00:39:42][Bot][INFO] Syncing commands globally...
+[2026-03-03 00:39:43][Bot][INFO] Commands have been successfully synced globally.
+[2026-03-03 00:39:43][Bot][INFO] Bot is ready to use in 1 Discord servers
+[2026-03-03 00:40:59][Bot][INFO] Command "sim-round" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-03 00:41:59][Bot][INFO] Command "cancel-match" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-03 00:43:14][Bot][INFO] Command "cancel-match" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-03 01:06:31][Bot][INFO] Loaded extension 'logger'
+[2026-03-03 01:06:31][Bot][INFO] Loaded extension 'stats'
+[2026-03-03 01:06:31][Bot][INFO] Loaded extension 'lobby'
+[2026-03-03 01:06:31][Bot][INFO] Loaded extension 'link'
+[2026-03-03 01:06:31][Bot][INFO] Loaded extension 'match'
+[2026-03-03 01:06:31][Bot][INFO] Loaded extension 'help'
+[2026-03-03 01:06:31][discord.client][INFO] logging in using static token
+[2026-03-03 01:06:32][DB][INFO] Creating database connection pool.
+[2026-03-03 01:06:32][API][INFO] Starting API helper client session
+[2026-03-03 01:06:32][API][INFO] Starting webhook server on :3000
+[2026-03-03 01:06:32][API][INFO] Webhook server started and running in the background
+[2026-03-03 01:06:33][discord.gateway][INFO] Shard ID 0 has connected to Gateway (Session ID: ad9cd65d480ccbb4c5845d2d808d63ab).
+[2026-03-03 01:06:33][Bot][INFO] Connected to Discord
+    Username: OIS
+    ID:       1477888649189392405
+[2026-03-03 01:06:35][Bot][INFO] Logged in as OIS
+[2026-03-03 01:06:35][Bot][INFO] discord.py API version: 2.6.4
+[2026-03-03 01:06:35][Bot][INFO] Python version: 3.12.1
+[2026-03-03 01:06:35][Bot][INFO] Running on: Linux 6.8.0-1044-azure (posix)
+[2026-03-03 01:06:35][Bot][INFO] Syncing commands globally...
+[2026-03-03 01:06:35][Bot][INFO] Commands have been successfully synced globally.
+[2026-03-03 01:06:35][Bot][INFO] Bot is ready to use in 1 Discord servers
+[2026-03-03 01:08:42][Bot][INFO] Loaded extension 'logger'
+[2026-03-03 01:08:42][Bot][INFO] Loaded extension 'stats'
+[2026-03-03 01:08:42][Bot][INFO] Loaded extension 'lobby'
+[2026-03-03 01:08:42][Bot][INFO] Loaded extension 'link'
+[2026-03-03 01:08:42][Bot][INFO] Loaded extension 'match'
+[2026-03-03 01:08:42][Bot][INFO] Loaded extension 'help'
+[2026-03-03 01:08:42][discord.client][INFO] logging in using static token
+[2026-03-03 01:08:43][DB][INFO] Creating database connection pool.
+[2026-03-03 01:08:43][API][INFO] Starting API helper client session
+[2026-03-03 01:08:43][API][INFO] Starting webhook server on :3000
+[2026-03-03 01:08:43][API][INFO] Webhook server started and running in the background
+[2026-03-03 01:08:44][discord.gateway][INFO] Shard ID 0 has connected to Gateway (Session ID: c5a230d771b153da70b3d959a1f570ea).
+[2026-03-03 01:08:44][Bot][INFO] Connected to Discord
+    Username: OIS
+    ID:       1477888649189392405
+[2026-03-03 01:08:46][Bot][INFO] Logged in as OIS
+[2026-03-03 01:08:46][Bot][INFO] discord.py API version: 2.6.4
+[2026-03-03 01:08:46][Bot][INFO] Python version: 3.12.1
+[2026-03-03 01:08:46][Bot][INFO] Running on: Linux 6.8.0-1044-azure (posix)
+[2026-03-03 01:08:46][Bot][INFO] Syncing commands globally...
+[2026-03-03 01:08:46][Bot][INFO] Commands have been successfully synced globally.
+[2026-03-03 01:08:46][Bot][INFO] Bot is ready to use in 1 Discord servers
+[2026-03-03 01:10:20][Bot][INFO] Loaded extension 'logger'
+[2026-03-03 01:10:20][Bot][INFO] Loaded extension 'stats'
+[2026-03-03 01:10:20][Bot][INFO] Loaded extension 'lobby'
+[2026-03-03 01:10:20][Bot][INFO] Loaded extension 'link'
+[2026-03-03 01:10:20][Bot][INFO] Loaded extension 'match'
+[2026-03-03 01:10:20][Bot][INFO] Loaded extension 'help'
+[2026-03-03 01:10:20][discord.client][INFO] logging in using static token
+[2026-03-03 01:10:21][DB][INFO] Creating database connection pool.
+[2026-03-03 01:10:22][API][INFO] Starting API helper client session
+[2026-03-03 01:10:22][API][INFO] Starting webhook server on :3000
+[2026-03-03 01:10:22][API][INFO] Webhook server started and running in the background
+[2026-03-03 01:10:23][discord.gateway][INFO] Shard ID 0 has connected to Gateway (Session ID: b8f5e238813748a17041cd9a6efd6f8c).
+[2026-03-03 01:10:23][Bot][INFO] Connected to Discord
+    Username: OIS
+    ID:       1477888649189392405
+[2026-03-03 01:10:25][Bot][INFO] Logged in as OIS
+[2026-03-03 01:10:25][Bot][INFO] discord.py API version: 2.6.4
+[2026-03-03 01:10:25][Bot][INFO] Python version: 3.12.1
+[2026-03-03 01:10:25][Bot][INFO] Running on: Linux 6.8.0-1044-azure (posix)
+[2026-03-03 01:10:25][Bot][INFO] Syncing commands globally...
+[2026-03-03 01:10:25][Bot][INFO] Commands have been successfully synced globally.
+[2026-03-03 01:10:25][Bot][INFO] Bot is ready to use in 1 Discord servers
+[2026-03-03 01:10:41][Bot][INFO] Command "create-lobby" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)
+[2026-03-03 01:11:25][Bot][INFO] Command "cancel-match" issued
+    User:  mayngu (378014902620520451)
+    Guild: LINKED 10MANS (808343054364311553)

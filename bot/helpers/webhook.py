@@ -61,22 +61,22 @@ class WebServer:
             return web.json_response({'error': 'Match service unavailable'}, status=503)
 
         try:
-            await self.bot.api.stop_game_server(match_model.game_server_id)
+            if match_model.game_server_id != 'simulation':
+                await self.bot.api.stop_game_server(match_model.game_server_id)
         except Exception as e:
             self.logger.error(e, exc_info=1)
 
         guild_model = await self.bot.db.get_guild_by_id(match_model.guild.id)
-        match_api = await self.bot.api.get_match(match_model.id)
-        if not match_api:
-            return web.json_response({'error': 'Unable to fetch match from DatHost'}, status=502)
+        if match_model.game_server_id != 'simulation':
+            match_api = await self.bot.api.get_match(match_model.id)
+            if not match_api:
+                return web.json_response({'error': 'Unable to fetch match from DatHost'}, status=502)
         await self.match_cog.finalize_match(match_model, match_api, guild_model)
         return web.json_response({'ok': True})
 
     async def round_end(self, req):
         self.logger.debug(f"Received webhook data from {req.url}")
         self.match_cog = self.match_cog or self.bot.get_cog("Match")
-        game_server = None
-        message = None
         api_key = self._extract_api_key(req)
         if not api_key:
             return web.json_response({'error': 'Unauthorized'}, status=401)
@@ -91,35 +91,11 @@ class WebServer:
             return web.json_response({'error': 'Invalid JSON body'}, status=400)
 
         match_api = Match.from_dict(resp_data)
-        # guild_model = await self.bot.db.get_guild_by_id(match_model.guild.id)
         if not match_api:
             return web.json_response({'error': 'Invalid match payload'}, status=400)
 
-        for player_stat in match_api.players:
-            try:
-                player_model = await self.bot.db.get_player_by_steam_id(player_stat.steam_id)
-                if player_model:
-                    await self.bot.db.update_player_stats(player_model.discord.id, match_api.id, player_stat.to_dict)
-            except Exception as e:
-                self.logger.error(e, exc_info=1)
-
-        try:
-            message = await match_model.text_channel.fetch_message(match_model.message_id)
-        except Exception as e:
-            self.logger.error(e, exc_info=1)
-
-        try:
-            game_server = await self.bot.api.get_game_server(match_api.game_server_id)
-        except Exception as e:
-            self.logger.error(e, exc_info=1)
-
-        if message:
-            try:
-                if self.match_cog:
-                    embed = self.match_cog.embed_match_info(match_api, game_server)
-                    await message.edit(embed=embed)
-            except Exception as e:
-                self.logger.error(e, exc_info=1)
+        if self.match_cog:
+            await self.match_cog.process_round_update(match_model, match_api)
 
         return web.json_response({'ok': True})
 

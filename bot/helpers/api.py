@@ -250,7 +250,7 @@ class APIManager:
     async def update_game_server(
         self,
         server_id: str,
-        game_mode: Literal["competitive", "wingman"]=None,
+        game_mode: Literal["competitive", "casual", "arms_race", "ffa_deathmatch", "retakes", "wingman", "custom"]=None,
         location: str=None,
     ):
         """"""

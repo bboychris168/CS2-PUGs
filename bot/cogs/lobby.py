@@ -15,6 +15,7 @@ from bot.views import ReadyView
 
 
 CAPACITY_CHOICES = [
+    app_commands.Choice(name="Solo test (1)", value=1),
     app_commands.Choice(name="1vs1", value=2),
     app_commands.Choice(name="2vs2", value=4),
     app_commands.Choice(name="3vs3", value=6),
@@ -42,7 +43,12 @@ MAP_SELECTION_CHOICES = [
 
 GAME_MODE_CHOICES = [
     app_commands.Choice(name="Competitive", value="competitive"),
+    app_commands.Choice(name="Casual", value="casual"),
+    app_commands.Choice(name="Arms Race", value="arms_race"),
+    app_commands.Choice(name="FFA Deathmatch", value="ffa_deathmatch"),
+    app_commands.Choice(name="Retakes", value="retakes"),
     app_commands.Choice(name="Wingman", value="wingman"),
+    app_commands.Choice(name="Custom", value="custom"),
 ]
 
 CONNECT_TIME_CHOICES = [
@@ -370,7 +376,7 @@ class LobbyCog(commands.Cog, name="Lobby"):
         """"""
         embed = Embed(title=title)
 
-        info_str = f"Game mode: *{lobby_model.game_mode.capitalize()}*\n" \
+        info_str = f"Game mode: *{lobby_model.game_mode.replace('_', ' ').title()}*\n" \
                    f"Teams selection: *{lobby_model.team_method.capitalize()}*\n" \
                    f"Captains selection: *{lobby_model.captain_method.capitalize()}*\n" \
                    f"Maps selection: *{lobby_model.map_method.capitalize()}*"
