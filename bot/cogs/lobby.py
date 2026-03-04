@@ -15,7 +15,6 @@ from bot.views import ReadyView
 
 
 CAPACITY_CHOICES = [
-    app_commands.Choice(name="Solo test (1)", value=1),
     app_commands.Choice(name="1vs1", value=2),
     app_commands.Choice(name="2vs2", value=4),
     app_commands.Choice(name="3vs3", value=6),

@@ -9,7 +9,6 @@ A feature-rich Discord bot for managing Counter-Strike 2 pick-up games (PUGs). I
 - **👥 Smart Team Building** - Autobalanced teams by rating, captain drafts, or random assignment
 - **📊 Player Statistics** - Track kills, deaths, assists, MVPs, headshots, multi-kills, and calculated ratings
 - **👀 Spectator System** - Add spectators who can observe matches without playing
-- **🤖 Simulation Mode** - Test match flows without DatHost servers (solo capacity lobbies)
 - **🏆 Leaderboards** - Automated leaderboard and statistics display with generated images
 - **⚡ Real-time Updates** - Live round and match statistics via DatHost webhooks
 - **🔒 Auto Guild Setup** - Automatic creation of required roles, channels, and categories
@@ -135,7 +134,7 @@ All commands are slash commands. Type `/` in Discord to see available commands.
 | `/empty-lobby` | `lobby_id` | Remove all players from a lobby |
 
 **Lobby Configuration Options:**
-- **Capacity**: 1 (simulation mode), 2, 4, 6, 8, 10, or 12 players
+- **Capacity**: 2, 4, 6, 8, 10, or 12 players
 - **Game Mode**: `competitive`, `casual`, `wingman`, `arms_race`, `ffa_deathmatch`, `retakes`, or `custom`
 - **Connect Time**: 1-10 minutes before match cancellation if players don't join
 - **Teams Method**: 
@@ -176,7 +175,6 @@ All commands are slash commands. Type `/` in Discord to see available commands.
 |---------|-----------|-------------|
 | `/cancel-match` | `match_id` | Cancel an active match |
 | `/add-player` | `match_id`, `user`, `team` | Add player to live match on specific team or as spectator |
-| `/sim-round` | `match_id` | Trigger simulated round update (simulation mode only) |
 
 ### Utility
 
@@ -202,7 +200,7 @@ All commands are slash commands. Type `/` in Discord to see available commands.
 ### Testing
 - **No automated test suite** currently available
 - Validate changes via targeted runtime checks
-- Use simulation mode (`capacity=1` lobbies) for testing without DatHost servers
+- Use a 1vs1 lobby (`capacity=2`) to test the full match workflow end-to-end
 - If slash command choices change, restart bot to trigger command sync
 
 ## 🌐 DatHost Integration
@@ -312,11 +310,6 @@ On bot startup or when joining a new guild, the bot automatically creates:
 - Spectators can observe the match without affecting teams or stats
 - View spectator lists with `/spectators-list`
 
-### Testing & Development
-- **Simulation Mode**: Create a lobby with `capacity=1` to test without DatHost servers
-  - Bot generates simulated rounds with random statistics
-  - Use `/sim-round` to manually trigger round updates
-  - Perfect for testing match flow and webhook integrations
 
 
 ## 🤝 Contributing

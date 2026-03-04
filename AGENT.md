@@ -134,7 +134,7 @@ All commands implemented as `app_commands` in cogs:
 - `/create-lobby` - Create lobby with full configuration ([bot/cogs/lobby.py](bot/cogs/lobby.py))
   - Params: `capacity`, `game_mode`, `connect_time`, `teams_method`, `captains_method`, `map_method`
   - Creates voice channel with permissions for linked role
-  - Capacity options: 1 (simulation), 2, 4, 6, 8, 10, 12
+  - Capacity options: 2, 4, 6, 8, 10, 12
 - `/delete-lobby` - Delete lobby and voice channel ([bot/cogs/lobby.py](bot/cogs/lobby.py))
 - `/empty-lobby` - Remove all users from lobby queue ([bot/cogs/lobby.py](bot/cogs/lobby.py))
 
@@ -164,9 +164,6 @@ All commands implemented as `app_commands` in cogs:
 - `/add-player` - Add player to live match ([bot/cogs/match.py](bot/cogs/match.py))
   - Params: `match_id`, `user`, `team` (team1/team2/spectator)
   - Calls DatHost `add_match_player()` API
-- `/sim-round` - Trigger simulated round update ([bot/cogs/match.py](bot/cogs/match.py))
-  - Only works for simulation matches (`game_server_id = 'simulation'`)
-  - Posts fake round-end payload to webhook handler
 
 ### Utility
 - `/help` - Paginated help system ([bot/cogs/help.py](bot/cogs/help.py))
@@ -194,33 +191,6 @@ All commands implemented as `app_commands` in cogs:
 - **Update Flow**: Webhook `match-end` updates stats atomically via SQL `UPDATE ... SET column = column + $N`
 - **Image Generation**: PIL-based statistics card rendering with custom fonts/templates
 - **Leaderboard**: Auto-updates leaderboard channel with top players by rating
-
-## Simulation Mode (Testing)
-Activated when lobby `capacity = 1`. Allows testing without DatHost servers.
-
-### Behavior
-- No DatHost server required (`game_server_id = 'simulation'`)
-- Match setup flow proceeds normally (teams, captains, map selection all work)
-- Bot auto-generates 10 simulated rounds with random stats:
-  - Random kills/deaths/assists per player
-  - Random team scores (0-16 for each team, sum ≤ 30)
-  - Simulated timestamps and round numbers
-- Second "player" is bot itself with placeholder stats
-- `/sim-round` command manually triggers round updates via webhook handler
-
-### Use Cases
-- Testing match flow without server costs
-- Debugging webhook handling
-- Validating statistics calculations
-- Testing UI components (ready-up, veto, poll, teams)
-
-### Technical Details
-- Implemented in [bot/cogs/match.py](bot/cogs/match.py) `fetch_game_server()`
-- Check: `if lobby.capacity == 1:`
-- Creates match with `game_server_id = 'simulation'`
-- Generates fake player with bot's user ID + 1
-- Round simulation loops through 10 rounds with `asyncio.sleep(1)` delays
-- Posts to local webhook endpoint `/cs2bot-api/round-end`
 
 ## Webhook Contract
 - Routes:
@@ -389,7 +359,7 @@ Dynamically created/cleaned up per match:
 3. **DB methods**: Add queries to `DBManager` in `bot/helpers/db.py`
 4. **Command implementation**: Add slash command to appropriate cog in `bot/cogs/`
 5. **Views/UI**: Create interactive UI in `bot/views/` if needed
-6. **Testing**: Test with simulation mode (`capacity=1`) before production
+6. **Testing**: Test with a 1vs1 lobby (`capacity=2`) before production
 
 ### Migration Best Practices
 - Use `yoyo` framework conventions
@@ -433,5 +403,4 @@ Dynamically created/cleaned up per match:
 - All map selection methods now fully documented
 - Statistics system with computed rating formula
 - Spectator system with dedicated database table
-- Simulation mode for testing without DatHost servers
 - Comprehensive error handling and logging throughout cogs

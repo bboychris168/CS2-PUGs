@@ -61,16 +61,14 @@ class WebServer:
             return web.json_response({'error': 'Match service unavailable'}, status=503)
 
         try:
-            if match_model.game_server_id != 'simulation':
-                await self.bot.api.stop_game_server(match_model.game_server_id)
+            await self.bot.api.stop_game_server(match_model.game_server_id)
         except Exception as e:
             self.logger.error(e, exc_info=1)
 
         guild_model = await self.bot.db.get_guild_by_id(match_model.guild.id)
-        if match_model.game_server_id != 'simulation':
-            match_api = await self.bot.api.get_match(match_model.id)
-            if not match_api:
-                return web.json_response({'error': 'Unable to fetch match from DatHost'}, status=502)
+        match_api = await self.bot.api.get_match(match_model.id)
+        if not match_api:
+            return web.json_response({'error': 'Unable to fetch match from DatHost'}, status=502)
         await self.match_cog.finalize_match(match_model, match_api, guild_model)
         return web.json_response({'ok': True})
 
