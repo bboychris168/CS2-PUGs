@@ -69,14 +69,6 @@ Database enum `team_method` values: `random`, `autobalance`, `captains`
 - Integration: Spectators auto-added to DatHost match on setup
 - Match behavior: Can connect to server but don't affect teams/stats
 
-### Simulation Mode (Testing)
-- Activated when `lobby.capacity == 1`
-- Sets `game_server_id = 'simulation'` (no DatHost server needed)
-- Auto-generates 10 simulated rounds with random stats
-- Command: `/sim-round` in [bot/cogs/match.py](bot/cogs/match.py) manually triggers round updates
-- Pattern in `fetch_game_server()`: Check capacity, create fake match data, post to local webhook
-- Use for testing match flow, statistics, UI components without server costs
-
 ### Ready-Up Flow
 - View: [bot/views/readyView.py](bot/views/readyView.py) with "Ready"/"Unready" buttons
 - Triggered when lobby reaches capacity
@@ -90,7 +82,7 @@ Database enum `team_method` values: `random`, `autobalance`, `captains`
 - Start bot: `python3 run.py`
 - There is no documented automated test suite; validate by targeted runtime checks for changed behavior.
 - If slash command choices changed (e.g., new enum values), restart bot so command sync runs in `on_ready`.
-- Use simulation mode for testing: Create lobby with `capacity=1`, test without DatHost servers
+- Use a 1vs1 lobby (`capacity=2`) for testing the full match workflow end-to-end
 
 ## Security
 - Treat `config.json` as sensitive (Discord token, DatHost credentials, DB credentials, webhook-related settings).

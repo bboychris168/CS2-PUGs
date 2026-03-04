@@ -4,9 +4,8 @@ from discord.ext import commands
 from discord import Embed, Member, Message, Guild, PermissionOverwrite, SelectOption, VoiceChannel, app_commands, Interaction
 from typing import List, Literal
 
-from random import choice, shuffle, randint
+from random import choice, shuffle
 import asyncio
-import time
 
 from bot.helpers.api import Match
 from bot.helpers.utils import GAME_SERVER_LOCATIONS, generate_api_key, generate_scoreboard_img
@@ -23,92 +22,6 @@ class MatchCog(commands.Cog, name="Match"):
 
     def __init__(self, bot: G5Bot):
         self.bot = bot
-        self.simulation_tasks = {}
-        self.simulation_state = {}
-
-    class PlaceholderUser:
-        """Minimal discord-like user object used in simulation mode."""
-
-        def __init__(self, user_id: int, display_name: str):
-            self.id = user_id
-            self.display_name = display_name
-            self.mention = f"**{display_name}**"
-
-        async def move_to(self, *_args, **_kwargs):
-            return None
-
-    def _build_simulated_match(self, match_id: str, map_name: str, connect_time: int, team1_name: str, team2_name: str, match_players: List[dict]) -> Match:
-        match_data = {
-            'id': match_id,
-            'game_server_id': 'simulation',
-            'team1': {
-                'name': team1_name,
-                'stats': {'score': 0}
-            },
-            'team2': {
-                'name': team2_name,
-                'stats': {'score': 0}
-            },
-            'settings': {
-                'map': map_name,
-                'connect_time': connect_time,
-            },
-            'finished': False,
-            'rounds_played': 0,
-            'players': match_players,
-        }
-        return Match.from_dict(match_data)
-
-    def _build_simulated_round_match(self, match_id: str) -> Match:
-        state = self.simulation_state.get(match_id)
-        if not state:
-            return None
-
-        players = []
-        for player in state['players']:
-            player_stats = {
-                'steam_id_64': str(player['steam_id']),
-                'team': player['team'],
-                'stats': {
-                    'kills': player['kills'],
-                    'deaths': player['deaths'],
-                    'assists': player['assists'],
-                    'kills_with_headshot': player['headshots'],
-                    'mvps': player['mvps'],
-                    '2ks': player['k2'],
-                    '3ks': player['k3'],
-                    '4ks': player['k4'],
-                    '5ks': player['k5'],
-                    'score': player['score'],
-                }
-            }
-            players.append(player_stats)
-
-        return Match.from_dict({
-            'id': match_id,
-            'game_server_id': 'simulation',
-            'team1': {
-                'name': state['team1_name'],
-                'stats': {'score': state['team1_score']}
-            },
-            'team2': {
-                'name': state['team2_name'],
-                'stats': {'score': state['team2_score']}
-            },
-            'settings': {
-                'map': state['map_name'],
-                'connect_time': state['connect_time'],
-            },
-            'finished': False,
-            'rounds_played': state['rounds_played'],
-            'players': players,
-        })
-
-    def _stop_simulation_task(self, match_id: str):
-        task = self.simulation_tasks.pop(match_id, None)
-        if task and not task.done():
-            task.cancel()
-        self.simulation_state.pop(match_id, None)
 
     async def process_round_update(self, match_model: MatchModel, match_api: Match):
         game_server = None
@@ -127,11 +40,10 @@ class MatchCog(commands.Cog, name="Match"):
         except Exception as e:
             self.bot.logger.error(e, exc_info=1)
 
-        if match_model.game_server_id != 'simulation':
-            try:
-                game_server = await self.bot.api.get_game_server(match_api.game_server_id)
-            except Exception as e:
-                self.bot.logger.error(e, exc_info=1)
+        try:
+            game_server = await self.bot.api.get_game_server(match_api.game_server_id)
+        except Exception as e:
+            self.bot.logger.error(e, exc_info=1)
 
         if message:
             try:
@@ -139,86 +51,6 @@ class MatchCog(commands.Cog, name="Match"):
                 await message.edit(embed=embed)
             except Exception as e:
                 self.bot.logger.error(e, exc_info=1)
-
-    async def _run_simulation_rounds(self, match_id: str):
-        for _ in range(10):
-            try:
-                await asyncio.sleep(8)
-                success = await self.run_simulation_round(match_id)
-                if not success:
-                    return
-            except asyncio.CancelledError:
-                return
-            except Exception as e:
-                self.bot.logger.error(e, exc_info=1)
-
-    async def run_simulation_round(self, match_id: str):
-        try:
-            state = self.simulation_state.get(match_id)
-            if not state:
-                return False
-
-            match_model = await self.bot.db.get_match_by_id(match_id)
-            if not match_model or match_model.game_server_id != 'simulation':
-                self._stop_simulation_task(match_id)
-                return False
-
-            state['rounds_played'] += 1
-            winning_team = 'team1' if randint(0, 1) == 0 else 'team2'
-            if winning_team == 'team1':
-                state['team1_score'] += 1
-            else:
-                state['team2_score'] += 1
-
-            for player in state['players']:
-                kills = randint(0, 3)
-                deaths = randint(0, 2)
-                assists = randint(0, 2)
-                player['kills'] += kills
-                player['deaths'] += deaths
-                player['assists'] += assists
-                player['headshots'] += randint(0, kills)
-                player['mvps'] += 1 if player['team'] == winning_team and kills > 0 and randint(0, 1) == 1 else 0
-                player['k2'] += 1 if kills >= 2 else 0
-                player['k3'] += 1 if kills >= 3 else 0
-                player['k4'] += 1 if kills >= 4 else 0
-                player['k5'] += 1 if kills >= 5 else 0
-                player['score'] += kills * 2 + assists
-
-            simulated_match = self._build_simulated_round_match(match_id)
-            if simulated_match:
-                await self.process_round_update(match_model, simulated_match)
-                return True
-
-            return False
-        except asyncio.CancelledError:
-            return False
-        except Exception as e:
-            self.bot.logger.error(e, exc_info=1)
-            return False
-
-    @app_commands.command(name="sim-round", description="Trigger one fake round-end update for a simulation match")
-    @app_commands.describe(match_id="Simulation match ID")
-    @app_commands.checks.has_permissions(administrator=True)
-    async def sim_round(self, interaction: Interaction, match_id: str):
-        await interaction.response.defer(ephemeral=True)
-
-        match_model = await self.bot.db.get_match_by_id(match_id)
-        if not match_model:
-            raise CustomError("Invalid match ID.")
-
-        if match_model.game_server_id != 'simulation':
-            raise CustomError("This command only works for simulation matches.")
-
-        if match_id not in self.simulation_state:
-            raise CustomError("Simulation state not found for this match.")
-
-        updated = await self.run_simulation_round(match_id)
-        if not updated:
-            raise CustomError("Failed to generate simulation round update.")
-
-        embed = Embed(description=f"Simulated round update sent for match #{match_id}.")
-        await interaction.followup.send(embed=embed, ephemeral=True)
 
     @app_commands.command(name="cancel-match", description="Cancel a live match")
     @app_commands.describe(match_id="Match ID")
@@ -232,42 +64,17 @@ class MatchCog(commands.Cog, name="Match"):
         if not match_model:
             raise CustomError("Invalid match ID.")
 
-        self._stop_simulation_task(match_id)
-        
-        if match_model.game_server_id != 'simulation':
-            try:
-                await self.bot.api.cancel_match(match_id)
-            except:
-                pass
+        try:
+            await self.bot.api.cancel_match(match_id)
+        except:
+            pass
 
-            try:
-                await self.bot.api.stop_game_server(match_model.game_server_id)
-            except:
-                pass
+        try:
+            await self.bot.api.stop_game_server(match_model.game_server_id)
+        except:
+            pass
 
-            match_api = await self.bot.api.get_match(match_id)
-        else:
-            match_api = Match.from_dict({
-                'id': match_model.id,
-                'game_server_id': match_model.game_server_id,
-                'team1': {
-                    'name': match_model.team1_name,
-                    'stats': {'score': match_model.team1_score}
-                },
-                'team2': {
-                    'name': match_model.team2_name,
-                    'stats': {'score': match_model.team2_score}
-                },
-                'settings': {
-                    'map': match_model.map_name,
-                    'connect_time': match_model.connect_time,
-                },
-                'cancel_reason': 'simulation_cancel',
-                'finished': True,
-                'rounds_played': match_model.rounds_played,
-                'players': []
-            })
-
+        match_api = await self.bot.api.get_match(match_id)
         await self.finalize_match(match_model, match_api, guild_model)
 
         embed = Embed(description=f"Match #{match_id} cancelled successfully.")
@@ -410,18 +217,9 @@ class MatchCog(commands.Cog, name="Match"):
     ):
         """"""
         await asyncio.sleep(3)
-        simulation_mode = len(queue_users) == 1
-        simulated_match = None
 
         try:
-            if simulation_mode:
-                placeholder = self.PlaceholderUser(
-                    user_id=9_000_000_000_000_000 + int(time.time()) % 1_000_000,
-                    display_name="Test Bot"
-                )
-                team1_users = [queue_users[0]]
-                team2_users = [placeholder]
-            elif team_method == 'captains' and len(queue_users) >= 4:
+            if team_method == 'captains' and len(queue_users) >= 4:
                 team1_users, team2_users = await self.pick_teams(message, queue_users, captain_method)
             elif team_method == 'autobalance' and len(queue_users) >= 4:
                 team1_users, team2_users = await self.autobalance_teams(queue_users)
@@ -442,74 +240,60 @@ class MatchCog(commands.Cog, name="Match"):
             } for player in team1_players_model + team2_players_model]
 
             mpool = list(Config.maps.keys())
-            if simulation_mode:
-                map_name = choice(mpool)
-                api_key = generate_api_key()
-                sim_match_id = f"sim-{int(time.time())}-{guild.id % 1_000_000}"
-                api_match = self._build_simulated_match(
-                    sim_match_id,
-                    map_name,
-                    connect_time,
-                    team1_name,
-                    team2_name,
-                    match_players
-                )
-                game_server = None
+            if map_method == 'veto':
+                veto_view = VetoView(message, mpool, team1_captain, team2_captain)
+                await message.edit(embed=veto_view.embed_veto(), view=veto_view)
+                await veto_view.wait()
+                map_name = veto_view.maps_left[0]
+            elif map_method == 'poll':
+                poll_view = PollView(message, mpool, queue_users)
+                map_name = await poll_view.start()
             else:
-                if map_method == 'veto':
-                    veto_view = VetoView(message, mpool, team1_captain, team2_captain)
-                    await message.edit(embed=veto_view.embed_veto(), view=veto_view)
-                    await veto_view.wait()
-                    map_name = veto_view.maps_left[0]
-                elif map_method == 'poll':
-                    poll_view = PollView(message, mpool, queue_users)
-                    map_name = await poll_view.start()
-                else:
-                    map_name = choice(mpool)
+                map_name = choice(mpool)
 
-                placeholder = "Choose your game server location"
-                options = [SelectOption(label=display_name, value=_id) for _id, display_name in GAME_SERVER_LOCATIONS.items()]
-                dropdown = DropDownView([team1_captain, team2_captain], placeholder, options, 1, 1)
-                await message.edit(embed=None, view=dropdown)
-                await dropdown.wait()
+            placeholder = "Choose your game server location"
+            options = [SelectOption(label=display_name, value=_id) for _id, display_name in GAME_SERVER_LOCATIONS.items()]
+            dropdown = DropDownView([team1_captain, team2_captain], placeholder, options, 1, 1)
+            await message.edit(embed=None, view=dropdown)
+            await dropdown.wait()
 
-                if any(x is None for x in dropdown.users_selections.values()):
-                    raise asyncio.TimeoutError
-                location = choice(list(dropdown.users_selections.values()))
+            if any(x is None for x in dropdown.users_selections.values()):
+                raise asyncio.TimeoutError
+            location = choice(list(dropdown.users_selections.values()))
 
-                await message.edit(embed=Embed(description='Searching for available game servers...'), view=None)
-                await asyncio.sleep(2)
+            await message.edit(embed=Embed(description='Searching for available game servers...'), view=None)
+            await asyncio.sleep(2)
 
-                game_server = await self.fetch_game_server(location, game_mode)
+            game_server = await self.fetch_game_server(location, game_mode)
 
-                await message.edit(embed=Embed(description='Setting up match on game server...'), view=None)
-                await asyncio.sleep(2)
+            await message.edit(embed=Embed(description='Setting up match on game server...'), view=None)
+            await asyncio.sleep(2)
 
-                spectators = await self.bot.db.get_spectators(guild)
-                for spec in spectators:
-                    if spec.discord not in team1_users and spec.discord not in team2_users:
-                        match_players.append({'steam_id_64': spec.steam_id, 'team': 'spectator'})
+            spectators = await self.bot.db.get_spectators(guild)
+            for spec in spectators:
+                if spec.discord not in team1_users and spec.discord not in team2_users:
+                    match_players.append({'steam_id_64': spec.steam_id, 'team': 'spectator'})
 
-                api_key = generate_api_key()
-                api_match = await self.bot.api.create_match(
-                    game_server.id,
-                    map_name,
-                    team1_name,
-                    team2_name,
-                    match_players,
-                    connect_time,
-                    api_key
-                )
+            api_key = generate_api_key()
+            api_match = await self.bot.api.create_match(
+                game_server.id,
+                map_name,
+                team1_name,
+                team2_name,
+                match_players,
+                connect_time,
+                api_key
+            )
 
-                attempts = 0
+            attempts = 0
+            game_server = await self.bot.api.get_game_server(game_server.id)
+            while not game_server.ip and attempts < 5:
                 game_server = await self.bot.api.get_game_server(game_server.id)
-                while not game_server.ip and attempts < 5:
-                    game_server = await self.bot.api.get_game_server(game_server.id)
-                    await asyncio.sleep(3)
-                    attempts += 1
-                
-                if not game_server.ip:
-                    raise(APIError("Something went wrong on game server."))
+                await asyncio.sleep(3)
+                attempts += 1
+
+            if not game_server.ip:
+                raise(APIError("Something went wrong on game server."))
 
             await message.edit(embed=Embed(description='Setting up teams channels...'), view=None)
             team1_voice_users = [user for user in team1_users if isinstance(user, Member)]
@@ -523,7 +307,7 @@ class MatchCog(commands.Cog, name="Match"):
 
             await self.bot.db.insert_match({
                 'id': api_match.id,
-                'game_server_id': game_server.id if game_server else 'simulation',
+                'game_server_id': game_server.id,
                 'guild': guild.id,
                 'channel': channel.id,
                 'message': message.id,
@@ -545,36 +329,6 @@ class MatchCog(commands.Cog, name="Match"):
                                       'team': 'team1' if u.discord in team1_users else 'team2'})
             await self.bot.db.insert_players_stats(players_stats)
 
-            if simulation_mode:
-                simulated_match = api_match
-                self.simulation_state[api_match.id] = {
-                    'team1_name': team1_name,
-                    'team2_name': team2_name,
-                    'team1_score': 0,
-                    'team2_score': 0,
-                    'rounds_played': 0,
-                    'map_name': map_name,
-                    'connect_time': connect_time,
-                    'players': [
-                        {
-                            'steam_id': player.steam_id,
-                            'team': 'team1' if player.discord in team1_users else 'team2',
-                            'kills': 0,
-                            'deaths': 0,
-                            'assists': 0,
-                            'headshots': 0,
-                            'mvps': 0,
-                            'k2': 0,
-                            'k3': 0,
-                            'k4': 0,
-                            'k5': 0,
-                            'score': 0,
-                        }
-                        for player in team1_players_model + team2_players_model
-                    ]
-                }
-                self.simulation_tasks[api_match.id] = asyncio.create_task(self._run_simulation_rounds(api_match.id))
-
         except APIError as e:
             description = e.message
         except asyncio.TimeoutError:
@@ -585,7 +339,7 @@ class MatchCog(commands.Cog, name="Match"):
             self.bot.logger.error(e, exc_info=1)
             description = 'Something went wrong! See logs for details'
         else:
-            embed = self.embed_match_info(simulated_match if simulated_match else api_match, game_server)
+            embed = self.embed_match_info(api_match, game_server)
             await message.edit(embed=embed)
 
             return True
@@ -652,8 +406,6 @@ class MatchCog(commands.Cog, name="Match"):
 
     async def finalize_match(self, match_model: MatchModel, match_api: Match, guild_model: GuildModel):
         """"""
-        self._stop_simulation_task(match_model.id)
-
         try:
             move_aws = [user.move_to(guild_model.waiting_channel)
                         for user in match_model.team1_channel.members + match_model.team2_channel.members]
